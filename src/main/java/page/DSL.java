@@ -1,71 +1,65 @@
-package PageObjects;
+package page;
 
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Assert;
+import static core.DriverConfig.initBrowser;
+
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 
 public class DSL {
-
-	private WebDriver driver;
-
-	public DSL(WebDriver driver) {
-		this.driver = driver;
-	}
 	
 	public void setField(String idField, String message) {
-		driver.findElement(By.id(idField)).clear();
-		driver.findElement(By.id(idField)).sendKeys(message);
+		initBrowser().findElement(By.id(idField)).clear();
+		initBrowser().findElement(By.id(idField)).sendKeys(message);
 	}
 	
 	public String getField(String idField, String value) {
-		return driver.findElement(By.id(idField)).getAttribute(value);
+		return initBrowser().findElement(By.id(idField)).getAttribute(value);
 	}
 	
 	// Radio Button && Check Box //
 	public void setRadioAndCheck(String idField) {
-		driver.findElement(By.id(idField)).click();
+		initBrowser().findElement(By.id(idField)).click();
 	}
 	
 	public Boolean getRadioAndCheck(String idField) {
-		return driver.findElement(By.id(idField)).isSelected();
+		return initBrowser().findElement(By.id(idField)).isSelected();
 	}
 	
 	// Combo Box ||
 	public void setComboBox(String idField, String value) {
-		WebElement element = driver.findElement(By.id(idField));
+		WebElement element = initBrowser().findElement(By.id(idField));
 		Select combo = new Select(element);
 		combo.selectByVisibleText(value);
 	}
 	
 	public String getComboSelected(String idField) {
-		WebElement element = driver.findElement(By.id(idField));
+		WebElement element = initBrowser().findElement(By.id(idField));
 		Select combo = new Select(element);
 		return combo.getFirstSelectedOption().getText();
 	}
 	
 	// Combo Box Múltiplo
 	public void setComboBoxMultiplo(String idField, String value) {
-		WebElement element = driver.findElement(By.id(idField));
+		WebElement element = initBrowser().findElement(By.id(idField));
 		Select combo = new Select(element);
 		
 		combo.selectByVisibleText(value);
 	}
 	
 	public void undoCombo(String idField, String value) {
-		WebElement element = driver.findElement(By.id(idField));
+		WebElement element = initBrowser().findElement(By.id(idField));
 		Select combo = new Select(element);
 		combo.deselectByVisibleText(value);
 	}
 	
 	public int getAllInputSelect(String idField) {
-		WebElement element = driver.findElement(By.id(idField));
+		WebElement element = initBrowser().findElement(By.id(idField));
 		Select combo = new Select(element);
 		List<WebElement> options = combo.getOptions();
 		
@@ -73,7 +67,7 @@ public class DSL {
 	}
 	
 	public List<String> getSelectedItens(String idField) {
-		WebElement element = driver.findElement(By.id(idField));
+		WebElement element = initBrowser().findElement(By.id(idField));
 		Select combo = new Select(element);
 		List<WebElement> allSelectedOptions = combo.getAllSelectedOptions();
 		List<String> value = new ArrayList<String>();
@@ -85,46 +79,46 @@ public class DSL {
 	
 	// Clicar em elementos //
 	public void setClick(String idField) {
-		driver.findElement(By.id(idField)).click();
+		initBrowser().findElement(By.id(idField)).click();
 	}
 	
 	public String getText(String idField, String value) {
-		return driver.findElement(By.id(idField)).getAttribute(value);
+		return initBrowser().findElement(By.id(idField)).getAttribute(value);
 	}
 	
 	// Interagir com links
 	public void setClickLink(String idField) {
-		driver.findElement(By.linkText(idField)).click();
+		initBrowser().findElement(By.linkText(idField)).click();
 	}
 	
 	public String containsElement(By typeTag) {
-		return driver.findElement(typeTag).getText();
+		return initBrowser().findElement(typeTag).getText();
 	}	
 	
 	// ALERTS //
 	public String alertText(){
-		Alert alert = driver.switchTo().alert();
+		Alert alert = initBrowser().switchTo().alert();
 		String value = alert.getText();
 		alert.accept();
 		return value;
 	}
 	
 	public String alertConfirm() {
-		Alert alert = driver.switchTo().alert();
+		Alert alert = initBrowser().switchTo().alert();
 		String value = alert.getText();
 		alert.accept();
 		return value;
 	}
 	
 	public String alertDismiss() {
-		Alert alert = driver.switchTo().alert();
+		Alert alert = initBrowser().switchTo().alert();
 		String value = alert.getText();
 		alert.dismiss();
 		return value;
 	}
 	
 	public void alertPrompt(String text) {
-		Alert alert = driver.switchTo().alert();
+		Alert alert = initBrowser().switchTo().alert();
 		alert.sendKeys(text);
 		alert.accept();
 	}
@@ -133,7 +127,7 @@ public class DSL {
 	// TABELA XPATH
 	public void clicarBotaoTabela(String colunaBusca, String valor, String colunaBotao, String idTabela){
 		//procurar coluna do registro
-		WebElement tabela = driver.findElement(By.xpath("//*[@id='elementosForm:tableUsuarios']"));
+		WebElement tabela = initBrowser().findElement(By.xpath("//*[@id='elementosForm:tableUsuarios']"));
 		int idColuna = obterIndiceColuna(colunaBusca, tabela);
 		
 		//encontrar a linha do registro

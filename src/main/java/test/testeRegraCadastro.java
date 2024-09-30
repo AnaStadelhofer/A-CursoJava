@@ -1,7 +1,10 @@
+package test;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import core.BaseTest;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -10,16 +13,14 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
-import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
+import page.DSL;
+import page.campoTreinamentoPage;
 
-import PageObjects.DSL;
-import PageObjects.campoTreinamentoPage;
+import static core.DriverConfig.quitBrowser;
 
 @RunWith(Parameterized.class)
-public class testeRegraCadastro {
+public class testeRegraCadastro extends BaseTest {
 
 	private WebDriver driver;
 	private DSL dsl;
@@ -38,18 +39,9 @@ public class testeRegraCadastro {
 	@Parameter(value=5)
 	public String msg;
 	
-	@After
-	public void endTests() {
-		driver.quit();
-	}
-	
     @Before
     public void setUp() {
-        System.setProperty("webdriver.chrome.driver", "C:\\chromedriver\\chromedriver.exe");
-        driver = new ChromeDriver();
-        driver.manage().window().maximize();
-		driver.get("file:///" + System.getProperty("user.dir") + "/src/main/resources/componentes.html");
-		dsl = new DSL(driver);
+		dsl = new DSL();
     }
 	
 	@Parameters

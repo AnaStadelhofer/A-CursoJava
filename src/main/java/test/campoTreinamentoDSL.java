@@ -1,37 +1,34 @@
+package test;
+
+import core.BaseTest;
 import org.junit.Test;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
-import PageObjects.DSL;
+import page.DSL;
 
-import java.util.List;
+import static core.DriverConfig.initBrowser;
+import static core.DriverConfig.quitBrowser;
+
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
-public class campoTreinamentoDSL {
+import java.util.concurrent.TimeUnit;
+
+
+public class campoTreinamentoDSL extends BaseTest {
 	
-	private WebDriver driver;
 	private DSL dsl;
-
-	@After
-	public void endTests() {
-		driver.quit();
-	}
 	
     @Before
     public void setUp() {
-        System.setProperty("webdriver.chrome.driver", "C:\\chromedriver\\chromedriver.exe");
-        driver = new ChromeDriver();
-        driver.manage().window().maximize();
-		driver.get("file:///" + System.getProperty("user.dir") + "/src/main/resources/componentes.html");
-		dsl = new DSL(driver);
+		dsl = new DSL();
     }
 	
 	@Test
@@ -144,57 +141,57 @@ public class campoTreinamentoDSL {
 	@Ignore
 	@Test
 	public void iframe() {
-		driver.switchTo().frame("frame1");
-		driver.findElement(By.id("frameButton")).click();
+		initBrowser().switchTo().frame("frame1");
+		initBrowser().findElement(By.id("frameButton")).click();
 		
 		
-		Alert alert =  driver.switchTo().alert();
-		String message = driver.switchTo().alert().getText();
+		Alert alert =  initBrowser().switchTo().alert();
+		String message = initBrowser().switchTo().alert().getText();
 
 		Assert.assertEquals("Frame OK!", message);
 		alert.accept();
-		
-		driver.switchTo().defaultContent();
-		driver.findElement(By.id("elementosForm:nome")).sendKeys(message);
+
+		initBrowser().switchTo().defaultContent();
+		initBrowser().findElement(By.id("elementosForm:nome")).sendKeys(message);
 	}
 	
 	@Ignore
 	@Test
 	public void popup() {
-		driver.findElement(By.id("buttonPopUpEasy")).click();
-		
-		driver.switchTo().window("Popup");
-		driver.findElement(By.tagName("textarea")).sendKeys("Deu certo?");
-		driver.close();
-		driver.switchTo().window("");
-		driver.findElement(By.tagName("textarea")).sendKeys("e agora?");
+		initBrowser().findElement(By.id("buttonPopUpEasy")).click();
+
+		initBrowser().switchTo().window("Popup");
+		initBrowser().findElement(By.tagName("textarea")).sendKeys("Deu certo?");
+		initBrowser().close();
+		initBrowser().switchTo().window("");
+		initBrowser().findElement(By.tagName("textarea")).sendKeys("e agora?");
 	}
 	
 	@Ignore
 	@Test
 	public void windoHandler() {
-		driver.findElement(By.id("buttonPopUpHard")).click();
+		initBrowser().findElement(By.id("buttonPopUpHard")).click();
 		
 		// Pega o id da janela atual
-		System.out.println(driver.getWindowHandle());
+		System.out.println(initBrowser().getWindowHandle());
 		// Pega o id de todas as janelas
-		System.out.println(driver.getWindowHandles());
-		
-		driver.switchTo().window((String) driver.getWindowHandles().toArray()[1]);
-		driver.findElement(By.tagName("textarea")).sendKeys("batata");
-		driver.close();
-		driver.switchTo().window((String) driver.getWindowHandles().toArray()[0]);
-		driver.findElement(By.tagName("textarea")).sendKeys("batata");
+		System.out.println(initBrowser().getWindowHandles());
+
+		initBrowser().switchTo().window((String) initBrowser().getWindowHandles().toArray()[1]);
+		initBrowser().findElement(By.tagName("textarea")).sendKeys("batata");
+		initBrowser().close();
+		initBrowser().switchTo().window((String) initBrowser().getWindowHandles().toArray()[0]);
+		initBrowser().findElement(By.tagName("textarea")).sendKeys("batata");
 	}
 	
 	@Test
 	public void testJavascript(){
-		JavascriptExecutor js = (JavascriptExecutor) driver;
+		JavascriptExecutor js = (JavascriptExecutor) initBrowser();
 //		js.executeScript("alert('Testando js via selenium')");
 		js.executeScript("document.getElementById('elementosForm:nome').value = 'Escrito via js'");
 		js.executeScript("document.getElementById('elementosForm:sobrenome').type = 'radio'");
 		
-		WebElement element = driver.findElement(By.id("elementosForm:nome"));
+		WebElement element = initBrowser().findElement(By.id("elementosForm:nome"));
 		js.executeScript("arguments[0].style.border = arguments[1]", element, "solid 4px red");
 	}
 	
@@ -202,5 +199,27 @@ public class campoTreinamentoDSL {
 	public void deveClicarBotaoTabela(){
 		dsl.clicarBotaoTabela("Escolaridade", "Mestrado", "Radio", "elementosForm:tableUsuarios");
 	}
-	
+
+	@Test
+	public void fixedHold() throws InterruptedException {
+		dsl.setClick("buttonDelay");
+		Thread.sleep(5000);
+		dsl.setField("novoCampo", "Preenchendo após a espera");
+	}
+
+	@Test
+	public void implicitWait() {
+		initBrowser().manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+		dsl.setClick("buttonDelay");
+		dsl.setField("novoCampo", "Preenchendo após a espera");
+	}
+
+	@Test
+	public void explicitWait() {
+		dsl.setClick("buttonDelay");
+		WebDriverWait wait = new WebDriverWait(initBrowser(), 30);
+		wait.until(ExpectedConditions.presenceOfElementLocated(By.id("novoCampo")));
+		dsl.setField("novoCampo", "Preenchendo após a espera");
+	}
+
 }

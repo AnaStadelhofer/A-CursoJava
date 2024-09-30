@@ -1,33 +1,29 @@
+package test;
+
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
 
-import PageObjects.DSL;
-import PageObjects.campoTreinamentoPage;
+import page.DSL;
+import page.campoTreinamentoPage;
+
+import static core.DriverConfig.quitBrowser;
 
 public class cadastradoUsuario {
 
 	private DSL dsl;
-	private WebDriver driver;
 	private campoTreinamentoPage page;
 	
 	@After
 	public void endTests() {
-		driver.quit();
+		quitBrowser();
 	}
 	
     @Before
     public void setUp() {
-        System.setProperty("webdriver.chrome.driver", "C:\\chromedriver\\chromedriver.exe");
-        driver = new ChromeDriver();
-        driver.manage().window().maximize();
-		driver.get("file:///" + System.getProperty("user.dir") + "/src/main/resources/componentes.html");
-		dsl = new DSL(driver);
-		page = new campoTreinamentoPage(driver);
+		dsl = new DSL();
+		page = new campoTreinamentoPage();
     }
     
     @Test

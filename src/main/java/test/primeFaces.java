@@ -1,14 +1,15 @@
+package test;
+
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.Select;
 
-import PageObjects.DSL;
+import page.DSL;
+
+import static core.DriverConfig.quitBrowser;
 
 public class primeFaces {
 
@@ -17,15 +18,12 @@ public class primeFaces {
 	
 	@After
 	public void endTests() {
-		//driver.quit();
+		quitBrowser();
 	}
 	
     @Before
     public void setUp() {
-        System.setProperty("webdriver.chrome.driver", "C:\\chromedriver\\chromedriver.exe");
-        driver = new ChromeDriver();
-        driver.manage().window().maximize();
-		dsl = new DSL(driver);
+		dsl = new DSL();
     }
     
     @Test
@@ -37,10 +35,9 @@ public class primeFaces {
     
     @Test
     public void selectButton() {
-    	driver.get("https://www.primefaces.org/showcase/ui/input/oneMenu.xhtml?jfwid=a68fb");
-    	driver.findElement(By.id("j_idt248:option")).click();
+		driver.get("https://www.primefaces.org/showcase/ui/input/oneMenu.xhtml?jfwid=a68fb");
+		driver.findElement(By.id("j_idt248:option")).click();
 		driver.findElement(By.id("j_idt248:option_1")).click();
 		Assert.assertTrue(dsl.containsElement(By.id("j_idt248:option_label")).contains("Option1"));
-    }
-	
+	}
 }
